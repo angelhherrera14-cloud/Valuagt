@@ -560,8 +560,8 @@ IMPORTANTE: Devuelve EXACTAMENTE este JSON sin nada más:
 }`;
 
     try {
-      // Llamar a la función de Netlify (no a Anthropic directo)
-      const response = await fetch('/.netlify/functions/analyze', {
+      // Llamar al Worker de Cloudflare
+      const response = await fetch('https://valuagt.angelhherrera14.workers.dev', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
