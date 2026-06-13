@@ -576,16 +576,24 @@ IMPORTANTE: Devuelve EXACTAMENTE este JSON sin nada más:
       }
 
       const data = await response.json();
-      
-      if (!data.content || !data.content[0]) {
-        throw new Error('Respuesta inesperada del servidor');
+
+      // Manejar diferentes formatos de respuesta
+      let content = '';
+      if (data.content && data.content[0] && data.content[0].text) {
+        content = data.content[0].text;
+      } else if (data.text) {
+        content = data.text;
+      } else if (typeof data === 'string') {
+        content = data;
+      } else {
+        // Mostrar la respuesta raw para debug
+        throw new Error('Formato inesperado: ' + JSON.stringify(data).substring(0, 100));
       }
 
-      const content = data.content[0].text;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       
       if (!jsonMatch) {
-        throw new Error('No se pudo extraer JSON de la respuesta');
+        throw new Error('No se pudo extraer JSON: ' + content.substring(0, 100));
       }
 
       const res = JSON.parse(jsonMatch[0]);
