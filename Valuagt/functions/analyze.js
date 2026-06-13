@@ -1,7 +1,4 @@
-import fetch from 'node-fetch';
-
 export default async (req, context) => {
-  // Solo aceptar POST
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
@@ -14,11 +11,9 @@ export default async (req, context) => {
       return new Response(JSON.stringify({ error: 'Prompt requerido' }), { status: 400 });
     }
 
-    // La API key viene de variables de entorno de Netlify
     const apiKey = process.env.ANTHROPIC_API_KEY;
     
     if (!apiKey) {
-      console.error('ANTHROPIC_API_KEY no configurada');
       return new Response(JSON.stringify({ error: 'API no configurada' }), { status: 500 });
     }
 
@@ -40,7 +35,6 @@ export default async (req, context) => {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Error de Anthropic:', error);
       return new Response(JSON.stringify({ error: 'Error en API de Anthropic' }), { status: response.status });
     }
 
@@ -55,7 +49,6 @@ export default async (req, context) => {
     });
 
   } catch (error) {
-    console.error('Error:', error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 };
